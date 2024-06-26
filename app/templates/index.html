@@ -17,7 +17,7 @@
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'Real-Time Data',
+                    label: 'G',
                     data: [],
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
@@ -25,15 +25,7 @@
             },
             options: {
                 scales: {
-                    x: {
-                        type: 'time', // Указываем тип шкалы времени
-                        time: {
-                            unit: 'second', // Масштабирование по секундам
-                            displayFormats: {
-                                second: 'h:mm:ss a' // Формат отображения времени
-                            }
-                        }
-                    },
+                    x: { beginAtZero: true },
                     y: { beginAtZero: true }
                 }
             }
@@ -43,7 +35,7 @@
 
         ws.onmessage = event => {
             const data = JSON.parse(event.data);
-            myChart.data.labels.push(new Date(data.timestamp));
+            myChart.data.labels.push(data.timestamp);
             myChart.data.datasets[0].data.push(data.value);
             myChart.update();
         };
