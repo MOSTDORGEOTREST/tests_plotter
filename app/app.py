@@ -32,6 +32,9 @@ async def websocket_endpoint(websocket: WebSocket):
                 data = {"timestamp": shear_strain[i], "value": G[i]}
                 await websocket.send_json(data)
                 await asyncio.sleep(3)
-            raise WebSocketDisconnect
+
+            await websocket.close()
+            break
+
     except WebSocketDisconnect:
         print("Client disconnected")
