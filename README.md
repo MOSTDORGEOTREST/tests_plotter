@@ -1,4 +1,5 @@
-# TestPlotter ![Лого](https://github.com/MOSTDORGEOTREST/tests_plotter/blob/main/app/static/favicon.ico = 50x50)
+# TestPlotter 
+![Лого](https://github.com/MOSTDORGEOTREST/tests_plotter/blob/main/app/static/favicon.ico)
 
 ### Сервис построения графиков лабораторных испытаний.
 
