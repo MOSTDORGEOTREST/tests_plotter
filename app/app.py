@@ -1,20 +1,26 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.future import select
 from passlib.hash import bcrypt
+from typing import Annotated
 
 from db.database import Base, engine, async_session
 from db import tables
 from config import configs
+from services.auth import get_current_username
+from api import router
 
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 
+app.include_router(router)
+
+
 @app.get("/", response_class=HTMLResponse)
-async def get(request: Request):
+async def get(request: Request, username: Annotated[str, Depends(get_current_username)]):
     return templates.TemplateResponse(
         "index.html",
         {

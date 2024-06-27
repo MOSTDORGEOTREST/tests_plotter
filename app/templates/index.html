@@ -31,7 +31,7 @@
             }
         });
 
-        const ws = new WebSocket(`ws://${window.location.host}/ws`);
+        const ws = new WebSocket(`ws://${window.location.host}/resonant_column/ws/`);
 
         ws.onmessage = event => {
             const data = JSON.parse(event.data);
