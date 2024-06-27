@@ -9,8 +9,8 @@ class Users(Base):
     password_hash = Column(String(60))
 
 
-class Tests(Base):
-    __tablename__ = "tests"
+class Experiments(Base):
+    __tablename__ = "experiments"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     test_type = Column(String(100))

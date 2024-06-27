@@ -32,7 +32,7 @@ async def get(request: Request, username: Annotated[str, Depends(get_current_use
 async def startup_event():
 
     async with engine.begin() as conn:
-        #await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
     async def create_users():
