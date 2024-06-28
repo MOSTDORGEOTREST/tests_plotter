@@ -29,27 +29,50 @@ router = APIRouter(
 
 @router.get("/", response_model=List[Experiment])
 async def get_experiments(
+        test_type: str = None,
         service: ExperimentsService = Depends(get_experiments_service),
         username: str = Depends(get_current_username)
 ):
     """Просмотр всех файлов"""
-    return await service.get()
+    return await service.get(test_type)
 
-@router.post("/")
+
+@router.get("/test_types/")
+async def get_test_types(
+        service: ExperimentsService = Depends(get_experiments_service),
+        username: str = Depends(get_current_username)
+):
+    """Просмотр всех файлов"""
+    return await service.get_test_types()
+
+
+@router.post("/", response_model=Experiment)
 async def create_experiment(
-        experiment_data: ExperimentCreate,
+        test_type: str,
+        laboratory_number: str,
+        object_number: str,
+        description: str,
         experiment_file: UploadFile,
         service: ExperimentsService = Depends(get_experiments_service),
         s3_service: S3Service = Depends(get_s3_service),
         username: str = Depends(get_current_username)
 ):
     """Создание отчета"""
-    experiment = await service.create(experiment_data)
-
     contents = await experiment_file.read()
+    filename = experiment_file.filename.replace(' ', '_')
+
+    experiment = await service.create(
+        ExperimentCreate(
+            test_type=test_type,
+            laboratory_number=laboratory_number,
+            object_number=object_number,
+            description=description
+        ),
+        filename
+    )
 
     try:
-        await s3_service.upload(data=contents, key=f'plotter/{experiment.id}.pickle')
+        await s3_service.upload(data=contents, key=f'plotter/{experiment.id}_{filename}')
     except Exception as err:
         await service.delete(experiment.id)
         raise HTTPException(

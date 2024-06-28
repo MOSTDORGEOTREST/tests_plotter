@@ -15,4 +15,6 @@ class Experiments(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     test_type = Column(String(100))
     link = Column(String(200))
-    description = Column(String)
+    laboratory_number = Column(String(100))
+    object_number = Column(String(50))
+    description = Column(String(1000))

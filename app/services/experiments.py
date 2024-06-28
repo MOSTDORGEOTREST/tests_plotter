@@ -12,10 +12,17 @@ class ExperimentsService:
     def __init__(self, session: Session):
         self.session = session
 
-    async def get(self) -> Optional[tables.Experiments]:
-        result = await self.session.execute(
-            select(tables.Experiments)
-        )
+    async def get(self, test_type: str = None) -> Optional[tables.Experiments]:
+        if test_type:
+            result = await self.session.execute(
+                select(tables.Experiments).
+                filter_by(test_type=test_type)
+            )
+        else:
+            result = await self.session.execute(
+                select(tables.Experiments)
+            )
+
         experiments = result.scalars().all()
 
         if not experiments:
@@ -26,14 +33,22 @@ class ExperimentsService:
 
         return experiments
 
-    async def create(self, data: ExperimentCreate) -> tables.Experiments:
+    async def get_test_types(self) -> Optional[list]:
+        result = await self.session.execute(
+            select(tables.Experiments.test_type).distinct()
+        )
+        return result.scalars().all()
+
+    async def create(self, data: ExperimentCreate, filename: str) -> tables.Experiments:
         id = await self.session.execute(func.nextval('experiments_id_seq'))
         id = id.scalar()
 
         experiment = tables.Experiments(
             id=id,
-            link=f"plotter/{id}.pickle",
+            link=f"plotter/{id}_{filename}",
             test_type=data.test_type,
+            laboratory_number=data.laboratory_number,
+            object_number=data.object_number,
             description=data.description
         )
         self.session.add(experiment)
