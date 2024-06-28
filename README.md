@@ -7,3 +7,5 @@
 * fastapi
 * html + CSS + js
 
+Запуск через docker-compose:\
+    `docker-compose up`

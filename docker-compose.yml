@@ -1,0 +1,26 @@
+version: '3.5'
+
+services:
+  web:
+    build: ./
+    command: bash -c 'poetry run uvicorn main_docker:app --host 0.0.0.0'
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_NAME=${POSTGRES_NAME}
+      - BASE_USER_NAME=${BASE_USER_NAME}
+      - BASE_USER_PASSWORD=${BASE_USER_PASSWORD}
+      - AWS_URI=${AWS_URI}
+      - AWS_ACCCESS_KEY=${AWS_ACCCESS_KEY}
+      - AWS_SERVICE_NAME=${AWS_SERVICE_NAME}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_BUCKET=${AWS_BUCKET}
+    ports:
+      - 8555:8000
+    restart: always
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro

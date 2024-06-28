@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import http.client
 import os
 
-load_dotenv(dotenv_path=os.path.normpath(".env"))
+load_dotenv(dotenv_path=os.path.normpath("../.env"))
 
 def get_self_public_ip():
     conn = http.client.HTTPConnection("ifconfig.me")
@@ -25,7 +25,7 @@ class Configs_env(BaseSettings):
 
 class Configs_docker_compose(BaseSettings):
     host_ip: str = get_self_public_ip()
-    database_url: str = Field(..., env='DATABASE_URL')
+    database_url: str = f'postgresql+asyncpg://{Field(..., env="POSTGRES_USER")}:{Field(..., env="POSTGRES_PASSWORD")}@{Field(..., env="POSTGRES_HOST")}:{Field(..., env="POSTGRES_PORT")}/{Field(..., env="POSTGRES_NAME")}'
     base_user_name: str = Field(..., env='BASE_USER_NAME')
     base_user_password: str = Field(..., env='BASE_USER_PASSWORD')
     endpoint_url: str = Field(..., env='AWS_URI')
@@ -40,3 +40,5 @@ try:
     configs = Configs_docker_compose()
 except ValidationError:
     configs = Configs_env()
+
+print(configs.database_url)
