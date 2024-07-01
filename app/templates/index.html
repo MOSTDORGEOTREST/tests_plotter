@@ -2,17 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Real-Time Chart</title>
+    <title>Real-Time Charts</title>
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/moment"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1cm;
+            padding: 1cm;
+            box-sizing: border-box;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 1cm;
+            box-sizing: border-box;
+            width: 100%;
+            max-height: 800px;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            gap: 1cm;
+            box-sizing: border-box;
+        }
+        .row.top {
+            height: 45%;
+        }
+        .row.bottom {
+            height: 45%;
+        }
+        canvas {
+            flex: 1;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="myChart"></canvas>
+    <div class="container">
+        <div class="row top">
+            <canvas id="myChart1"></canvas>
+            <canvas id="myChart2"></canvas>
+        </div>
+        <div class="row bottom">
+            <canvas id="myChart3"></canvas>
+        </div>
+    </div>
     <script>
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const myChart = new Chart(ctx, {
+        const ctx1 = document.getElementById('myChart1').getContext('2d');
+        const ctx2 = document.getElementById('myChart2').getContext('2d');
+        const ctx3 = document.getElementById('myChart3').getContext('2d');
+
+        const myChart1 = new Chart(ctx1, {
             type: 'line',
             data: {
                 labels: [],
@@ -25,19 +72,65 @@
             },
             options: {
                 scales: {
-                    x: { beginAtZero: true },
-                    y: { beginAtZero: true }
+                    x: { type: 'linear', beginAtZero: true },
+                    y: { type: 'linear', beginAtZero: true }
                 }
             }
         });
 
-        const ws = new WebSocket(`ws://${window.location.host}/resonant_column/ws/`);
+        const myChart2 = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'A(f)',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: { type: 'linear', beginAtZero: true },
+                    y: { type: 'linear', beginAtZero: true }
+                }
+            }
+        });
+
+        const myChart3 = new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Resonant curves',
+                    data: [],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: { type: 'linear' },
+                    y: { type: 'linear', beginAtZero: true }
+                }
+            }
+        });
+
+        const ws = new WebSocket(`ws://${window.location.host}/resonant_column/ws/1/`);
 
         ws.onmessage = event => {
             const data = JSON.parse(event.data);
-            myChart.data.labels.push(data.timestamp);
-            myChart.data.datasets[0].data.push(data.value);
-            myChart.update();
+            myChart1.data.labels.push(data.timestamp);
+            myChart1.data.datasets[0].data.push(data.value);
+            myChart1.update();
+
+            myChart2.data.labels.push(data.timestamp);
+            myChart2.data.datasets[0].data.push(data.frequency);
+            myChart2.update();
+
+            myChart3.data.labels.push(data.x);
+            myChart3.data.datasets[0].data.push(data.y);
+            myChart3.update();
         };
     </script>
 </body>
