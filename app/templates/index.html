@@ -67,12 +67,13 @@
                     label: 'G',
                     data: [],
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
+                    borderWidth: 2,
+                    spanGaps: true
                 }]
             },
             options: {
                 scales: {
-                    x: { type: 'linear', beginAtZero: true },
+                    x: { type: 'logarithmic', beginAtZero: true },
                     y: { type: 'linear', beginAtZero: true }
                 }
             }
@@ -86,12 +87,13 @@
                     label: 'A(f)',
                     data: [],
                     borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
+                    borderWidth: 2,
+                    spanGaps: true
                 }]
             },
             options: {
                 scales: {
-                    x: { type: 'linear', beginAtZero: true },
+                    x: { type: 'linear'},
                     y: { type: 'linear', beginAtZero: true }
                 }
             }
@@ -105,7 +107,7 @@
                     label: 'Resonant curves',
                     data: [],
                     borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
+                    borderWidth: 2
                 }]
             },
             options: {
@@ -120,16 +122,16 @@
 
         ws.onmessage = event => {
             const data = JSON.parse(event.data);
-            myChart1.data.labels.push(data.timestamp);
-            myChart1.data.datasets[0].data.push(data.value);
+            myChart1.data.labels.push(data.ShearStrain1_general);
+            myChart1.data.datasets[0].data.push(data.G1);
             myChart1.update();
 
-            myChart2.data.labels.push(data.timestamp);
-            myChart2.data.datasets[0].data.push(data.frequency);
+            myChart2.data.labels.push(data.Freq);
+            myChart2.data.datasets[0].data.push(data.CURRENT);
             myChart2.update();
 
-            myChart3.data.labels.push(data.x);
-            myChart3.data.datasets[0].data.push(data.y);
+            myChart3.data.labels.push(data.Freq);
+            myChart3.data.datasets[0].data.push(data.ShearStrain1);
             myChart3.update();
         };
     </script>

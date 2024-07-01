@@ -37,26 +37,37 @@ async def websocket_endpoint(
     try:
         while True:
             for i in experiment_data["result_RCCT"].keys():
-                print(experiment_data["result_RCCT"])
                 for j in range(len(experiment_data["result_RCCT"][i]["Freq"])):
                     data = {
-                        'x': experiment_data["result_RCCT"][i]["Freq"][j],
-                        "y": experiment_data["result_RCCT"][i]["ShearStrain1[]"][j],
+                        "Freq": experiment_data["result_RCCT"][i]["Freq"][j],
+                        "Acur_target": experiment_data["result_RCCT"][i]["Acur_target"][j],
+                        "Adac": experiment_data["result_RCCT"][i]["Adac"][j],
+                        "ACCELERATION1": experiment_data["result_RCCT"][i]["ACCELERATION1[m/s^2]"][j],
+                        "ACCELERATION2": experiment_data["result_RCCT"][i]["ACCELERATION2[m/s^2]"][j],
+                        "CURRENT": experiment_data["result_RCCT"][i]["CURRENT[A]"][j],
+                        "Velocity1": experiment_data["result_RCCT"][i]["Velocity1[m/s]"][j],
+                        "Displacement1": experiment_data["result_RCCT"][i]["Displacement1[m]"][j],
+                        "ShearStrain1": experiment_data["result_RCCT"][i]["ShearStrain1[]"][j],
+                        "Velocity2": experiment_data["result_RCCT"][i]["Velocity2[m/s]"][j],
+                        "Displacement2": experiment_data["result_RCCT"][i]["Displacement2[m]"][j],
+                        "ShearStrain2": experiment_data["result_RCCT"][i]["ShearStrain2[]"][j],
                     }
                     await websocket.send_json(data)
-                    await asyncio.sleep(0.5)
+                    await asyncio.sleep(0.1)
 
-                    print(experiment_data["result_RCCT"][i]["Freq"][j])
 
                 data = {
-                    "timestamp": experiment_data['ShearStrain1[]'][i],
-                    "value": experiment_data['G1[MPa]'][i],
-                    "frequency": experiment_data['Frequency1'][i],
-                    "current": experiment_data['CURRENT[A]'][i],
+                    "CURRENT_general": experiment_data['CURRENT[A]'][i],
+                    "ShearStrain1_general": experiment_data['ShearStrain1[]'][i],
+                    "G1": experiment_data['G1[MPa]'][i],
+                    "Frequency1": experiment_data['Frequency1'][i],
+                    "Frequency2": experiment_data['CURRENT[A]'][i],
+                    "ShearStrain2_general": experiment_data['ShearStrain2[]'][i],
+                    "G2": experiment_data['G2[MPa]'][i],
                 }
 
                 await websocket.send_json(data)
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(0.1)
 
             await websocket.close()
             break
