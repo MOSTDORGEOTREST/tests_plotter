@@ -58,6 +58,14 @@ async def startup_event():
                             print(f'Создан пользователь {str(i + 1)}')
                         except Exception as err:
                             print(f'Ошибка создания пользователя {str(i + 1)}', str(err))
+
+                user = tables.Users(
+                    username=f'{configs.base_user_name}',
+                    password_hash=bcrypt.hash(f'{configs.base_user_password}')
+                )
+
+                session.add(user)
+
                 await session.commit()
 
     await create_users()
