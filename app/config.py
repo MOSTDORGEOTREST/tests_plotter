@@ -40,5 +40,3 @@ try:
     configs = Configs_docker_compose()
 except ValidationError:
     configs = Configs_env()
-
-print(configs.database_url)
