@@ -68,4 +68,4 @@ async def startup_event():
 
                 await session.commit()
 
-    await create_users()
+    #await create_users()

@@ -11,21 +11,6 @@ router = APIRouter(
     prefix="/experiments",
     tags=['experiments'])
 
-#@router.get("/", response_model=Report)
-#@cache(expire=60)
-#async def get_report(
-#        id: str,
-#        request: Request,
-#        service: ReportsService = Depends(get_report_service),
-#        stat_service: StatisticsService = Depends(get_statistics_service),
-#):
-#    """Просмотр данных отчета по id"""
-#    report = await service.get(id)
-#
-#    if id != '4c795fb5002852b5af5df9e5de1e44b11b920d6f':
-#        await stat_service.create(client_ip=request.headers.get("X-Real-IP") or request.client.host, report_id=id)
-#
-#    return report
 
 @router.get("/", response_model=List[Experiment])
 async def get_experiments(
@@ -91,8 +76,10 @@ async def delete_experiment(
         username: str = Depends(get_current_username)
 ):
     """Удаление файла"""
+    key = await service.get_file(id)
+
     try:
-        await s3_service.delete(f'plotter/{id}.pickle')
+        await s3_service.delete(key[0])
     except Exception as err:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

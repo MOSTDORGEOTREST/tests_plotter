@@ -12,6 +12,13 @@ class ExperimentsService:
     def __init__(self, session: Session):
         self.session = session
 
+    async def get_file(self, id) -> Optional[list]:
+        result = await self.session.execute(
+            select(tables.Experiments.link).
+            filter_by(id=id)
+        )
+        return result.scalars().all()
+
     async def get(self, test_type: str = None) -> Optional[tables.Experiments]:
         if test_type:
             result = await self.session.execute(
